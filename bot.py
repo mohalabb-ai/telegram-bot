@@ -1,77 +1,102 @@
+import os
 import requests
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
-    ApplicationBuilder,
+    Application,
     CommandHandler,
     MessageHandler,
     ContextTypes,
     filters
 )
 
-# 🔑 ضع التوكنات هنا
-BOT_TOKEN = 8529085496:AAEgjI98ncStqDPat_q6UJ1Fc1HdgXrIjSg
-VT_API_KEY = fc3789913edb1c49af793b4593f028166f9e4860e0dd7cadb9eef68577728a19
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+VT_API_KEY = os.environ.get("VT_API_KEY")
+CHANNEL_USERNAME = os.environ.get("CHANNEL_USERNAME")
+INSTAGRAM_URL = os.environ.get("INSTAGRAM_URL")
 
-# أمر /start
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+# ===== فحص الاشتراك =====
+async def is_subscribed(bot, user_id: int) -> bool:
+    try:
+        member = await bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        return member.status in ("member", "administrator", "creator")
+    except:
+        return False
+
+
+# ===== رسالة الاشتراك =====
+async def ask_sub(update: Update):
+    keyboard = [
+        [InlineKeyboardButton("📢 اشترك في القناة", url=f"https://t.me/{CHANNEL_USERNAME.replace('@','')}")],
+        [InlineKeyboardButton("📸 تابع إنستغرام", url=INSTAGRAM_URL)]
+    ]
     await update.message.reply_text(
-        "👋 مرحبًا!\nأرسل رابط موقع وسأفحصه لك 🔍"
+        "🚫 يجب الاشتراك قبل استخدام البوت",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-# فحص الرابط
+
+# ===== /start =====
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+
+    if not await is_subscribed(context.bot, user_id):
+        await ask_sub(update)
+        return
+
+    await update.message.reply_text("🔗 أرسل الرابط لفحصه")
+
+
+# ===== فحص الرابط =====
 async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+
+    if not await is_subscribed(context.bot, user_id):
+        await ask_sub(update)
+        return
+
     url = update.message.text.strip()
 
-    headers = {
-        "x-apikey": VT_API_KEY
-    }
-    data = {
-        "url": url
-    }
-
-    # إرسال الرابط لـ VirusTotal
-    response = requests.post(
-        "https://www.virustotal.com/api/v3/urls",
-        headers=headers,
-        data=data
-    )
-
-    if response.status_code != 200:
-        await update.message.reply_text("❌ حدث خطأ أثناء الفحص")
+    if not url.startswith("http"):
+        await update.message.reply_text("❗ أرسل رابطًا صحيحًا")
         return
 
-    analysis_id = response.json()["data"]["id"]
+    headers = {"x-apikey": VT_API_KEY}
+    data = {"url": url}
 
-    # جلب النتيجة
-    report = requests.get(
-        f"https://www.virustotal.com/api/v3/analyses/{analysis_id}",
-        headers=headers
-    )
+    try:
+        r = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data)
+        analysis_id = r.json()["data"]["id"]
 
-    if report.status_code != 200:
-        await update.message.reply_text("❌ لم أستطع جلب نتيجة الفحص")
-        return
+        report = requests.get(
+            f"https://www.virustotal.com/api/v3/analyses/{analysis_id}",
+            headers=headers
+        )
 
-    stats = report.json()["data"]["attributes"]["stats"]
+        stats = report.json()["data"]["attributes"]["stats"]
 
-    message = (
-        "🔍 **نتيجة فحص الرابط**\n\n"
-        f"✅ آمن: {stats.get('harmless', 0)}\n"
-        f"⚠️ مشبوه: {stats.get('suspicious', 0)}\n"
-        f"❌ خبيث: {stats.get('malicious', 0)}"
-    )
+        msg = (
+            "🔍 نتيجة الفحص:\n\n"
+            f"✅ آمن: {stats['harmless']}\n"
+            f"⚠️ مشبوه: {stats['suspicious']}\n"
+            f"❌ خبيث: {stats['malicious']}"
+        )
 
-    await update.message.reply_text(message, parse_mode="Markdown")
+        await update.message.reply_text(msg)
 
-# تشغيل البوت
+    except:
+        await update.message.reply_text("❌ فشل الفحص")
+
+
+# ===== التشغيل =====
 def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_url))
 
-    print("🤖 Bot is running...")
     app.run_polling()
+
 
 if __name__ == "__main__":
     main()
