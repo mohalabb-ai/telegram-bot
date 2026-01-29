@@ -51,39 +51,56 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # ===== فحص الرابط =====
+import asyncio
+import requests
+from telegram import Update
+from telegram.ext import ContextTypes
+
 async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-
-    if not await is_subscribed(context.bot, user_id):
-        await ask_sub(update)
-        return
-
     url = update.message.text.strip()
 
-    if not url.startswith("http"):
-        await update.message.reply_text("❗ أرسل رابطًا صحيحًا")
+    headers = {
+        "x-apikey": VT_API_KEY
+    }
+
+    # إرسال الرابط
+    response = requests.post(
+        "https://www.virustotal.com/api/v3/urls",
+        headers=headers,
+        data={"url": url}
+    )
+
+    if response.status_code != 200:
+        await update.message.reply_text("❌ فشل إرسال الرابط إلى VirusTotal")
         return
 
-    headers = {"x-apikey": VT_API_KEY}
-    data = {"url": url}
+    analysis_id = response.json()["data"]["id"]
 
-    try:
-        r = requests.post("https://www.virustotal.com/api/v3/urls", headers=headers, data=data)
-        analysis_id = r.json()["data"]["id"]
+    await update.message.reply_text("⏳ جاري فحص الرابط، انتظر قليلًا...")
 
-        report = requests.get(
-            f"https://www.virustotal.com/api/v3/analyses/{analysis_id}",
-            headers=headers
-        )
+    # ⏳ انتظر 15 ثانية
+    await asyncio.sleep(15)
 
-        stats = report.json()["data"]["attributes"]["stats"]
+    # جلب النتيجة
+    report = requests.get(
+        f"https://www.virustotal.com/api/v3/analyses/{analysis_id}",
+        headers=headers
+    )
 
-        msg = (
-            "🔍 نتيجة الفحص:\n\n"
-            f"✅ آمن: {stats['harmless']}\n"
-            f"⚠️ مشبوه: {stats['suspicious']}\n"
-            f"❌ خبيث: {stats['malicious']}"
-        )
+    if report.status_code != 200:
+        await update.message.reply_text("❌ فشل جلب نتيجة الفحص")
+        return
+
+    stats = report.json()["data"]["attributes"]["stats"]
+
+    message = (
+        "🔍 **نتيجة فحص الرابط**\n\n"
+        f"✅ آمن: {stats.get('harmless', 0)}\n"
+        f"⚠️ مشبوه: {stats.get('suspicious', 0)}\n"
+        f"❌ خبيث: {stats.get('malicious', 0)}"
+    )
+
+    await update.message.reply_text(message, parse_mode="Markdown")
 
         await update.message.reply_text(msg)
 
