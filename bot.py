@@ -9,8 +9,8 @@ from telegram.ext import (
     filters
 )
 
-BOT_TOKEN = os.environ.get("8529085496:AAHg39jZSEpHfztq3ifCfA7zTePaSMeQa4c")
-VT_API_KEY = os.environ.get("fc3789913edb1c49af793b4593f028166f9e4860e0dd7cadb9eef68577728a19")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+VT_API_KEY = os.environ.get("VT_API_KEY")
 CHANNEL_USERNAME = os.environ.get("@chafi9vip")
 INSTAGRAM_URL = os.environ.get("https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg==")
 
