@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 TOKEN = os.environ.get("BOT_TOKEN")
 
 CHANNEL_USERNAME = "@chafi9vip"
-INSTAGRAM_URL = "https://www.instagram.com/old.chafi9"
+INSTAGRAM_URL = "https://www.instagram.com/old.chafii9"
 
 
 async def is_subscribed(user_id: int, context: ContextTypes.DEFAULT_TYPE) -> bool:
