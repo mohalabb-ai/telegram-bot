@@ -103,10 +103,6 @@ async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(message, parse_mode="Markdown")
 
 
-    except:
-        await update.message.reply_text("❌ فشل الفحص")
-
-
 # ===== التشغيل =====
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
