@@ -1,18 +1,19 @@
 import os
-import requests
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
-    MessageHandler,
     ContextTypes,
-    filters
 )
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("BOT_TOKEN") 
+if not BOT_TOKEN:
+    raise valueError("BOT_TOKEN is not missing")
 VT_API_KEY = os.getenv("VT_API_KEY")
-CHANNEL_USERNAME = os.getenv("@chafi9vip")
-INSTAGRAM_URL = os.getenv("https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg==")
+if not VT_API_KEY:
+    raise valueError("VT_API_KEY is not missing")
+CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
+INSTAGRAM_URL = os.getenv("INSTAGRAM_URL")
 
 
 # ===== فحص الاشتراك =====
