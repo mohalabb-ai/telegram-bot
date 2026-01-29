@@ -3,7 +3,9 @@ from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
+    MessageHandler,
     ContextTypes,
+    filters
 )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN") 
