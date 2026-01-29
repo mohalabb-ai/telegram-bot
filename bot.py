@@ -2,7 +2,7 @@ import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-TOKEN = os.environ.get("8529085496:AAFfzegheaE0ip6rF_f6vwmT67LNnn1akiQ")
+TOKEN = os.environ.get("BOT_TOKEN")
 
 CHANNEL_USERNAME = "@chafi9vip"
 INSTAGRAM_URL = "https://www.instagram.com/old.chafi9"
