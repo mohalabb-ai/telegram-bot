@@ -102,7 +102,6 @@ async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(message, parse_mode="Markdown")
 
-        await update.message.reply_text(msg)
 
     except:
         await update.message.reply_text("❌ فشل الفحص")
