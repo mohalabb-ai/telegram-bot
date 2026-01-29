@@ -1,4 +1,12 @@
 import requests
+CHANNEL_USERNAME = "@chafi9vip"
+INSTAGRAM_URL = "https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg=="
+def is_subscribed(bot, user_id):
+    try:
+        member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        return member.status in ["member", "administrator", "creator"]
+    except:
+        return False
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -69,6 +77,23 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_url))
+    @bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+
+    if not is_subscribed(bot, user_id):
+        bot.send_message(
+            message.chat.id,
+            "🚫 لا يمكنك استخدام البوت\n\n"
+            "📢 اشترك في القناة أولًا:\n"
+            f"{CHANNEL_USERNAME}\n\n"
+            "📸 وتابع حسابنا على إنستغرام:\n"
+            f"{INSTAGRAM_URL}\n\n"
+            "✅ ثم أرسل /start من جديد"
+        )
+        return
+
+    bot.send_message(message.chat.id, "✅ مرحبًا بك! يمكنك الآن استخدام البوت")
 
     print("🤖 Bot is running...")
     app.run_polling()
