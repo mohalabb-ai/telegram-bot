@@ -13,7 +13,7 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 VT_API_KEY = os.getenv("VT_API_KEY")
 
-CHANNEL_USERNAME = "https://t.me/chafi9vip"
+CHANNEL_USERNAME = "@chafi9vip"
 INSTAGRAM_URL = "https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg=="
 import requests
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -29,7 +29,7 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 VT_API_KEY = os.getenv("VT_API_KEY")
 
-CHANNEL_USERNAME = "https://t.me/chafi9vip"
+CHANNEL_USERNAME = "@chafi9vip"
 INSTAGRAM_URL = "https://instagram.com/old.chafii9"
 
 if not BOT_TOKEN:
