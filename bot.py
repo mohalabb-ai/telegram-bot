@@ -14,7 +14,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 VT_API_KEY = os.getenv("VT_API_KEY")
 
 CHANNEL_USERNAME = "@chafi9vip"
-INSTAGRAM_URL = import os
+INSTAGRAM_URL = "https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg=="
 import requests
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
