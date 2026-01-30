@@ -40,6 +40,7 @@ async def ask_sub(update: Update):
 
 
 # ===== /start =====
+from telegram.ext import MessageHandler, filters
 from telegram.ext import CommandHandler
 
 async def start(update, context):
