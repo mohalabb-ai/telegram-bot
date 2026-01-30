@@ -42,7 +42,10 @@ if not VT_API_KEY:
 async def is_subscribed(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     try:
-        member = await context.bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        member = await context.bot.get_chat_member(
+            chat_id=f"@{CHANNEL_USERNAME}",
+            user_id=user_id
+        )
         return member.status in ["member", "administrator", "creator"]
     except:
         return False
@@ -94,10 +97,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ================== CHECK URL ==================
 async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not await is_subscribed(update, context):
-        await force_sub(update, context)
-        return
 
+    if not await is_subscribed(update, context):
+        await update.message.reply_text(
+            "🚫 يجب الاشتراك أولاً لاستخدام البوت\n\n"
+            "📢 قناة تيليغرام:\n"
+            "https://t.me/YourChannel\n\n"
+            "📸 إنستغرام:\n"
+            "https://instagram.com/YourPage\n\n"
+            "✅ اشترك ثم أرسل الرابط من جديد"
+        )
+        return
     url = update.message.text.strip()
 
     headers = {"x-apikey": VT_API_KEY}
