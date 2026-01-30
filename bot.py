@@ -10,10 +10,10 @@ from telegram.ext import (
 
 BOT_TOKEN = os.getenv("BOT_TOKEN") 
 if not BOT_TOKEN:
-    raise ValueError("BOT_TOKEN is not missing")
+    raise ValueError("BOT_TOKEN is missing")
 VT_API_KEY = os.getenv("VT_API_KEY")
 if not VT_API_KEY:
-    raise ValueError("VT_API_KEY is not missing")
+    raise ValueError("VT_API_KEY is missing")
 CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
 INSTAGRAM_URL = os.getenv("INSTAGRAM_URL")
 
