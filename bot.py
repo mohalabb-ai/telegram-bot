@@ -6,6 +6,7 @@ from telegram.ext import (
     CommandHandler,
     MessageHandler,
     ContextTypes,
+    CallbackQueryHandler,
     filters
 )
 
@@ -22,6 +23,7 @@ from telegram.ext import (
     CommandHandler,
     MessageHandler,
     ContextTypes,
+    CallbackQueryHandler,
     filters
 )
 
@@ -40,6 +42,20 @@ if not VT_API_KEY:
 
 # ================== SUB CHECK ==================
 async def is_subscribed(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def check_subscription_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    if await is_subscribed(update, context):
+        await query.edit_message_text(
+            "✅ تم التحقق من الاشتراك بنجاح!\n\n"
+            "🔗 الآن أرسل الرابط لفحصه"
+        )
+    else:
+        await query.edit_message_text(
+            "❌ لم يتم الاشتراك بعد\n\n"
+            "📢 اشترك في القناة ثم اضغط (تحقق) مرة أخرى"
+        )
     user_id = update.effective_user.id
     try:
         member = await context.bot.get_chat_member(
