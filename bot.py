@@ -29,7 +29,7 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 VT_API_KEY = os.getenv("VT_API_KEY")
 
-CHANNEL_USERNAME = "@YourChannel"
+CHANNEL_USERNAME = "https://t.me/chafi9vip"
 INSTAGRAM_URL = "https://instagram.com/old.chafii9"
 
 if not BOT_TOKEN:
