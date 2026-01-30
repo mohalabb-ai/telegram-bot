@@ -118,17 +118,17 @@ async def check_virustotal(url):
     return analysis["data"]["attributes"]["stats"]
     
 # ================== /start ==================
-keyboard = InlineKeyboardMarkup([
-    [InlineKeyboardButton("📢 اشترك في القناة", url="https://t.me/chafi9vip")],
-    [InlineKeyboardButton("📸 تابعنا على إنستغرام", url="https://instagram.com/old.chafii9")],
-    [InlineKeyboardButton("✅ تحقّق من الاشتراك", callback_data="check_sub")]
-])
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("📢 اشترك في القناة", url="https://t.me/chafi9vip")],
+        [InlineKeyboardButton("📸 تابعنا على إنستغرام", url=INSTAGRAM_URL)],
+        [InlineKeyboardButton("✅ تحقق من الاشتراك", callback_data="check_sub")]
+    ])
 
-await update.message.reply_text(
-    "🚫 يجب الاشتراك أولاً لاستخدام البوت:",
-    reply_markup=keyboard
-)
-
+    await update.message.reply_text(
+        "⏳ يجب الاشتراك أولًا لاستخدام البوت",
+        reply_markup=keyboard
+    )
 
 # ================== CHECK URL ==================
 async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
