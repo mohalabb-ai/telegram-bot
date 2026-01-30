@@ -13,8 +13,8 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 VT_API_KEY = os.getenv("VT_API_KEY")
 
-CHANNEL_USERNAME = "@YourChannel"
-INSTAGRAM_URL = "https://instagram.com/yourpage"
+CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
+INSTAGRAM_URL = os.getenv("INSTAGRAM_URL")
 
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN is missing")
