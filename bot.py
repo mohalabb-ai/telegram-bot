@@ -40,15 +40,15 @@ async def ask_sub(update: Update):
 
 
 # ===== /start =====
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
+from telegram.ext import CommandHandler
 
-    if not await is_subscribed(context.bot, user_id):
-        await ask_sub(update)
-        return
+async def start(update, context):
+    await update.message.reply_text(
+        "👋 أهلاً بك!\n"
+        "أرسل أي رابط وسأفحصه لك 🔍"
+    )
 
-    await update.message.reply_text("🔗 أرسل الرابط لفحصه")
-
+app.add_handler(CommandHandler("start", start))
 
 # ===== فحص الرابط =====
 import asyncio
