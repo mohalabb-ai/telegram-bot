@@ -40,31 +40,48 @@ if not BOT_TOKEN:
 if not VT_API_KEY:
     raise ValueError("VT_API_KEY is missing")
 
-# ================== SUB CHECK ==================
-async def is_subscribed(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    async def check_subscription_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
+# ============ SUB CHECK ============
 
-    if await is_subscribed(update, context):
-        await query.edit_message_text(
-            "✅ تم التحقق من الاشتراك بنجاح!\n\n"
-            "🔗 الآن أرسل الرابط لفحصه"
-        )
-    else:
-        await query.edit_message_text(
-            "❌ لم يتم الاشتراك بعد\n\n"
-            "📢 اشترك في القناة ثم اضغط (تحقق) مرة أخرى"
-        )
+async def is_subscribed(update: Update, context: ContextTypes.DEFAULT_TYPE) -> bool:
     user_id = update.effective_user.id
     try:
         member = await context.bot.get_chat_member(
-            chat_id=f"@{CHANNEL_USERNAME}",
+            chat_id=CHANNEL_USERNAME,
             user_id=user_id
         )
         return member.status in ["member", "administrator", "creator"]
     except:
         return False
+
+
+async def check_subscription_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    if await is_subscribed(update, context):
+        await query.edit_message_text(
+            "✅ تم التحقق من الاشتراك بنجاح\n\n"
+            "🔗 الآن أرسل الرابط لفحصه"
+        )
+    else:
+        await query.edit_message_text(
+            "❌ لم يتم الاشتراك بعد\n\n"
+            "📢 اشترك في القناة ثم اضغط (تحقق)",
+            reply_markup=InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(
+                        "📢 قناة التليغرام",
+                        url=f"https://t.me/{CHANNEL_USERNAME.replace('@','')}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "🔄 تحقق من الاشتراك",
+                        callback_data="check_sub"
+                    )
+                ]
+            ])
+        )
 
 # ================== FORCE SUB ==================
 async def force_sub(update: Update, context: ContextTypes.DEFAULT_TYPE):
