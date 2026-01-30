@@ -59,6 +59,28 @@ async def force_sub(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
+async def check_virustotal(url):
+    headers = {
+        "x-apikey": VT_API_KEY
+    }
+
+    async with aiohttp.ClientSession(headers=headers) as session:
+        async with session.post(
+            "https://www.virustotal.com/api/v3/urls",
+            data={"url": url}
+        ) as resp:
+            result = await resp.json()
+            analysis_id = result["data"]["id"]
+
+        await asyncio.sleep(5)
+
+        async with session.get(
+            f"https://www.virustotal.com/api/v3/analyses/{analysis_id}"
+        ) as resp:
+            analysis = await resp.json()
+
+    return analysis["data"]["attributes"]["stats"]
+    
 # ================== /start ==================
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_subscribed(update, context):
