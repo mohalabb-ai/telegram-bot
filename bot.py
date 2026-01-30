@@ -101,15 +101,17 @@ async def check_virustotal(url):
     return analysis["data"]["attributes"]["stats"]
     
 # ================== /start ==================
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not await is_subscribed(update, context):
-        await force_sub(update, context)
-        return
+keyboard = InlineKeyboardMarkup([
+    [InlineKeyboardButton("📢 اشترك في القناة", url="https://t.me/YourChannel")],
+    [InlineKeyboardButton("📸 تابعنا على إنستغرام", url="https://instagram.com/YourPage")],
+    [InlineKeyboardButton("✅ تحقّق من الاشتراك", callback_data="check_sub")]
+])
 
-    await update.message.reply_text(
-        "👋 أهلاً بك\n"
-        "🔗 أرسل رابطاً وسأفحصه لك"
-    )
+await update.message.reply_text(
+    "🚫 يجب الاشتراك أولاً لاستخدام البوت:",
+    reply_markup=keyboard
+)
+
 
 # ================== CHECK URL ==================
 async def check_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -161,7 +163,7 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, check_url))
-
+    app.add_handler(CallbackQueryHandler(check_subscription_button, pattern="check_sub"))
     app.run_polling()
 
 if __name__ == "__main__":
