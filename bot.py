@@ -69,8 +69,8 @@ async def is_subscribed(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ================== FORCE SUB ==================
 async def force_sub(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
-        [InlineKeyboardButton("📢 اشترك في القناة", url=f"https://t.me/chafi9vip)],
-        [InlineKeyboardButton("📸 تابعنا على إنستغرام", url=https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg==)],
+        [InlineKeyboardButton("📢 اشترك في القناة", url=f"https://t.me/chafi9vip")],
+        [InlineKeyboardButton("📸 تابعنا على إنستغرام", url="https://www.instagram.com/old.chafii9?igsh=MWdheTh6Zm1tNTAxcg==")],
         [InlineKeyboardButton("✅ تحققت", callback_data="check_sub")]
     ]
     await update.message.reply_text(
